@@ -34,5 +34,25 @@
             "name": "Release",
             "configurePreset": "Release"
         }
+    ],
+    "testPresets": [
+        {
+            "name": "arm-test-qemu",
+            "configurePreset": "Debug",
+            "filter": {
+                "exclude": {
+                    "name": "_hw$"
+                }
+            }
+        },
+        {
+            "name": "arm-test-hw",
+            "configurePreset": "Debug",
+            "filter": {
+                "include": {
+                    "name": "_hw$"
+                }
+            }
+        }
     ]
 }
