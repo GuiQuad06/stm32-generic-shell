@@ -40,8 +40,9 @@ add_executable(${CMAKE_PROJECT_NAME}
     Core/Src/handlers.c
 )
 
-add_executable(test_sample_success
-    tests/test_sample_success.c
+add_executable(test_shell
+    Core/Src/handlers.c
+    tests/test_shell.c
     tests/unity/unity.c
     startup_stm32f302x8.s
     Core/Src/system_stm32f3xx.c
@@ -81,7 +82,7 @@ set_source_files_properties(
 )
 
 # Required link option for semihosting to work correctly
-target_link_options(test_sample_success PRIVATE -specs=rdimon.specs -lc -lrdimon)
+target_link_options(test_shell PRIVATE -specs=rdimon.specs -lc -lrdimon)
 
 # Remove wrong libob.a library dependency when using cpp files
 list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
@@ -94,7 +95,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     shell
 )
 
-target_link_libraries(test_sample_success
+target_link_libraries(test_shell
     stm32cubemx
     shell
 )
@@ -111,31 +112,31 @@ FIND_PROGRAM(OPENOCD_BINARY
 )
 
 # Register the qemu tests with CTest
-add_test(NAME unity_sample_test_success
+add_test(NAME unity_test_shell
     COMMAND ${QEMU_BINARY}
     -machine olimex-stm32-h405
     -nographic
     -semihosting
     -semihosting-config enable=on,target=native
     -serial mon:stdio
-    -kernel $<TARGET_FILE:test_sample_success>
+    -kernel $<TARGET_FILE:test_shell>
 )
 
-add_test(NAME unity_sample_test_success_hw
+add_test(NAME unity_test_shell_hw
     COMMAND ${OPENOCD_BINARY}
     -f interface/stlink-v2-1.cfg
     -f target/stm32f3x.cfg
     -c "init"
     -c "arm semihosting enable"
     -c "arm semihosting_resexit enable"
-    -c "program $<TARGET_FILE:test_sample_success> verify"
+    -c "program $<TARGET_FILE:test_shell> verify"
     -c "reset init"
     -c "resume"
 )
 
 set_tests_properties(
-    unity_sample_test_success_hw
-    unity_sample_test_success
+    unity_test_shell_hw
+    unity_test_shell
     PROPERTIES
     FAIL_REGULAR_EXPRESSION ":FAIL"
     PASS_REGULAR_EXPRESSION ":PASS"
