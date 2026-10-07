@@ -9,7 +9,7 @@ if ! which clang-format >/dev/null 2>&1; then
 fi
 
 once=true
-for f in $(git diff --name-only --staged --diff-filter=ACMR -- '*.[ch]' ':(top,exclude)Drivers/**'); do
+for f in $(git diff --name-only --staged --diff-filter=ACMR -- '*.[ch]' ':(top,exclude)Drivers/**' ':(top,exclude)tests/**'); do
 	if ! clang-format --dry-run --Werror "$f" >/dev/null 2>&1; then
 		if $once; then
 			echo >&2 -e "\033[31m[ERROR] The following files are not well formatted:\033[0m"
